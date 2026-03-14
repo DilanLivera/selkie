@@ -1,0 +1,21 @@
+{
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(dotnet build:*)",
+      "Bash(git commit:*)",
+      "Bash(dotnet test:*)",
+      "Bash(dotnet run:*)",
+      "Bash(dotnet publish:*)",
+      "Bash(git tag:*)"
+    ]
+  },
+  "enabledPlugins": {
+    "dotnet-skills@dotnet-skills": true
+  }
+}
+
