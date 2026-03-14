@@ -1,0 +1,7 @@
+# lab-connect configuration
+# Copy this file to ~/.config/selkie/lab-connect.conf and fill in your values.
+
+SSH_USER=""
+SSH_HOST=""
+SSH_RETRY_COUNT=""
+SSH_RETRY_DELAY=""
