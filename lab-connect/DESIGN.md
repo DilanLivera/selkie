@@ -2,7 +2,7 @@
 
 **Date:** 2026-03-13
 **Status:** Draft
-**References:** [REQUIREMENTS.md](../REQUIREMENTS.md), ADR-001 through ADR-004
+**References:** [REQUIREMENTS.md](REQUIREMENTS.md), ADR-001 through ADR-004
 
 ---
 
