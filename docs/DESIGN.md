@@ -16,8 +16,8 @@ Selkie is a single bash script that runs inside WSL (Ubuntu) and automates the f
 
 ```
 selkie/
-├── selkie.sh            # Main entry point script
-├── selkie.conf          # User configuration file
+├── lab-connect          # Main entry point script
+├── lab-connect.conf     # User configuration file
 ├── docs/
 │   ├── DESIGN.md        # This document
 │   ├── adr/
@@ -33,22 +33,22 @@ selkie/
 ## 3. Installation
 
 1. Clone the repo into WSL (Ubuntu)
-2. Copy or symlink `selkie.sh` to a directory on the WSL `$PATH` (e.g. `~/.local/bin/selkie`)
-3. Make it executable: `chmod +x ~/.local/bin/selkie`
-4. Edit `selkie.conf` with SSH user, host, and any overrides
+2. Copy or symlink `lab-connect` to a directory on the WSL `$PATH` (e.g. `~/.local/bin/lab-connect`)
+3. Make it executable: `chmod +x ~/.local/bin/lab-connect`
+4. Edit `lab-connect.conf` with SSH user, host, and any overrides
 
 The script can then be invoked:
-- From a WSL shell: `selkie`
-- From PowerShell/Windows Terminal: `wsl selkie`
+- From a WSL shell: `lab-connect`
+- From PowerShell/Windows Terminal: `wsl lab-connect`
 
 ---
 
 ## 4. Configuration
 
-Configuration is stored in `selkie.conf` as key=value pairs, sourced by the script at startup.
+Configuration is stored in `lab-connect.conf` as key=value pairs, sourced by the script at startup.
 
 ```ini
-# selkie.conf
+# lab-connect.conf
 
 SSH_USER=your_username
 SSH_HOST=your.tailnet.hostname.or.ip
@@ -65,8 +65,8 @@ SSH_RETRY_DELAY=5
 
 The config file is looked up in the following order:
 1. Path provided by `SELKIE_CONFIG` environment variable
-2. `~/.config/selkie/selkie.conf`
-3. `./selkie.conf` (repo directory, for development)
+2. `~/.config/selkie/lab-connect.conf`
+3. `./lab-connect.conf` (repo directory, for development)
 
 ---
 
@@ -75,7 +75,7 @@ The config file is looked up in the following order:
 ### 5.1 Execution Flow
 
 ```
-selkie
+lab-connect
   │
   ├─ 1. Load config
   │
@@ -96,7 +96,7 @@ selkie
 
 ### 5.2 Components
 
-#### `selkie.sh` — Main Script
+#### `lab-connect` — Main Script
 
 Single bash script. No external dependencies beyond standard Unix tools and the software already present on the local WSL machine (`tailscale`, `ssh`, `wslview`).
 
@@ -106,9 +106,9 @@ Responsibilities:
 - Run SSH with retry loop
 - Pass the Zellij attach-or-create command to the remote shell via SSH
 
-#### `selkie.conf` — Configuration File
+#### `lab-connect.conf` — Configuration File
 
-Plain key=value file. Not committed to the repo (added to `.gitignore`). A `selkie.conf.example` template is committed instead.
+Plain key=value file. Not committed to the repo (added to `.gitignore`). A `lab-connect.conf.example` template is committed instead.
 
 ---
 
@@ -138,10 +138,10 @@ tailscale status
 for attempt in $(seq 1 $SSH_RETRY_COUNT); do
     ssh -o ConnectTimeout=10 $SSH_USER@$SSH_HOST <remote_command>
     if [ $? -eq 0 ]; then exit 0; fi
-    echo "[selkie] SSH attempt $attempt/$SSH_RETRY_COUNT failed. Retrying in ${SSH_RETRY_DELAY}s..."
+    echo "[lab-connect] SSH attempt $attempt/$SSH_RETRY_COUNT failed. Retrying in ${SSH_RETRY_DELAY}s..."
     sleep $SSH_RETRY_DELAY
 done
-echo "[selkie] SSH failed after $SSH_RETRY_COUNT attempts. Check your Tailscale connection."
+echo "[lab-connect] SSH failed after $SSH_RETRY_COUNT attempts. Check your Tailscale connection."
 exit 1
 ```
 
@@ -178,7 +178,7 @@ The `-t` flag allocates a pseudo-TTY, which is required for interactive terminal
 
 ## 8. Security Considerations
 
-- `selkie.conf` is excluded from version control via `.gitignore` to prevent accidental credential leakage
+- `lab-connect.conf` is excluded from version control via `.gitignore` to prevent accidental credential leakage
 - SSH authentication uses existing SSH keys — no passwords or tokens are stored in the script
 - No Tailscale tokens or API keys are stored; auth is delegated to the `tailscale` CLI and browser SSO
 
@@ -188,7 +188,7 @@ The `-t` flag allocates a pseudo-TTY, which is required for interactive terminal
 
 | # | Question | Resolution |
 |---|---|---|
-| OQ-2 | Should `selkie` be callable from PowerShell directly? | User can call via `wsl selkie` from PowerShell, or open a WSL shell first. Both work without extra scripting. |
+| OQ-2 | Should `lab-connect` be callable from PowerShell directly? | User can call via `wsl lab-connect` from PowerShell, or open a WSL shell first. Both work without extra scripting. |
 | OQ-3 | Does the Zellij layout need to be versioned? | `zellij attach --create` uses Zellij's default behaviour. Layout versioning deferred unless user specifies a custom layout. |
 
 | # | Question | Status |
