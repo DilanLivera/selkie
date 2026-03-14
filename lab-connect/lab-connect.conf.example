@@ -1,7 +1,7 @@
 # lab-connect configuration
-# Copy this file to ~/.config/selkie/lab-connect.conf and fill in your values.
+# Copy this to ~/.config/selkie/lab-connect.conf and fill in your values.
 
-SSH_USER=""
-SSH_HOST=""
-SSH_RETRY_COUNT=""
-SSH_RETRY_DELAY=""
+SSH_USER=           # your username on the remote homelab server
+SSH_HOST=           # Tailscale IP or hostname of your homelab server
+SSH_RETRY_COUNT=3   # number of SSH connection attempts before giving up
+SSH_RETRY_DELAY=5   # seconds to wait between retry attempts
