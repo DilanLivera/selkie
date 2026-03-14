@@ -99,3 +99,8 @@ Automates SSH-ing into a homelab server over Tailscale and attaching to a Zellij
 - Each commit represents one logical change (atomic commits)
 - Scope is optional but encouraged when the change is confined to a specific area
 - Description is lowercase, no trailing period
+
+## GitHub Issues
+
+- Use labels to categorize issues (e.g. `enhancement`, `bug`, `documentation`, `chore`)
+- Do not prefix issue titles with type tags — labels handle categorization
