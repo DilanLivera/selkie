@@ -1,7 +1,40 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+load_config() {
+    local config_file=""
+
+    if [[ -n "${SELKIE_CONFIG:-}" && -f "$SELKIE_CONFIG" ]]; then
+        config_file="$SELKIE_CONFIG"
+    elif [[ -f "$HOME/.config/selkie/lab-connect.conf" ]]; then
+        config_file="$HOME/.config/selkie/lab-connect.conf"
+    elif [[ -f "./lab-connect.conf" ]]; then
+        config_file="./lab-connect.conf"
+    fi
+
+    if [[ -z "$config_file" ]]; then
+        echo "[lab-connect] Config file not found. Copy lab-connect.conf.example to ~/.config/selkie/lab-connect.conf and fill in your values."
+        exit 1
+    fi
+
+    source "$config_file"
+
+    if [[ -z "${SSH_USER:-}" ]]; then
+        echo "[lab-connect] SSH_USER is not set in config."
+        exit 1
+    fi
+
+    if [[ -z "${SSH_HOST:-}" ]]; then
+        echo "[lab-connect] SSH_HOST is not set in config."
+        exit 1
+    fi
+
+    SSH_RETRY_COUNT="${SSH_RETRY_COUNT:-3}"
+    SSH_RETRY_DELAY="${SSH_RETRY_DELAY:-5}"
+}
+
 main() {
+    load_config
     echo "[lab-connect] not yet implemented"
 }
 
