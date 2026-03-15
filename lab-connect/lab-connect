@@ -33,8 +33,60 @@ load_config() {
     SSH_RETRY_DELAY="${SSH_RETRY_DELAY:-5}"
 }
 
+check_tailscale() {
+    local status_output
+    local status_exit=0
+    status_output=$(tailscale status 2>&1) || status_exit=$?
+
+    if [[ $status_exit -eq 0 && ! "$status_output" =~ NeedsLogin ]]; then
+        return 0
+    fi
+
+    echo "[lab-connect] Tailscale auth required, opening browser..."
+
+    local login_output
+    login_output=$(tailscale login 2>&1) || true  # login may exit non-zero while still providing URL
+
+    local auth_url
+    auth_url=$(echo "$login_output" | grep -oE 'https://[^ ]+')
+
+    if [[ -z "$auth_url" ]]; then
+        echo "[lab-connect] Could not extract auth URL from tailscale login output."
+        exit 1
+    fi
+
+    wslview "$auth_url"
+
+    local elapsed=0
+    local poll_interval=5
+    local timeout=120
+
+    while (( elapsed < timeout )); do
+        sleep "$poll_interval"
+        elapsed=$(( elapsed + poll_interval ))
+
+        local poll_exit=0
+        local poll_output
+        poll_output=$(tailscale status 2>&1) || poll_exit=$?
+
+        if [[ $poll_exit -eq 0 && ! "$poll_output" =~ NeedsLogin ]]; then
+            echo "[lab-connect] Tailscale authenticated."
+            return 0
+        fi
+    done
+
+    echo "[lab-connect] Tailscale auth timed out. Run 'tailscale login' manually."
+    exit 1
+}
+
 main() {
+    if ! command -v tailscale &>/dev/null; then
+        echo "[lab-connect] tailscale not found. Is Tailscale installed in WSL?"
+        exit 1
+    fi
+
     load_config
+    check_tailscale
     echo "[lab-connect] not yet implemented"
 }
 
