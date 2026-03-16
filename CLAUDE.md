@@ -102,5 +102,6 @@ Automates SSH-ing into a homelab server over Tailscale and attaching to a Zellij
 
 ## GitHub Issues
 
+- Every task must have a GitHub issue before work begins — no commits without a tracking issue
 - Use labels to categorize issues (e.g. `enhancement`, `bug`, `documentation`, `chore`)
 - Do not prefix issue titles with type tags — labels handle categorization
