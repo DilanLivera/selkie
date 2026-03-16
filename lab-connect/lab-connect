@@ -105,7 +105,7 @@ main() {
 
     load_config
     check_tailscale
-    echo "[lab-connect] not yet implemented"
+    connect_with_retry
 }
 
 main "$@"
