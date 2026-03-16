@@ -79,6 +79,10 @@ check_tailscale() {
     exit 1
 }
 
+connect() {
+    ssh -t -o ConnectTimeout=10 "$SSH_USER@$SSH_HOST" "zellij attach --create"
+}
+
 main() {
     if ! command -v tailscale &>/dev/null; then
         echo "[lab-connect] tailscale not found. Is Tailscale installed in WSL?"
