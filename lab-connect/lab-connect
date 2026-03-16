@@ -83,6 +83,20 @@ connect() {
     ssh -t -o ConnectTimeout=10 "$SSH_USER@$SSH_HOST" "zellij attach --create"
 }
 
+connect_with_retry() {
+    for attempt in $(seq 1 "$SSH_RETRY_COUNT"); do
+        connect && return 0
+
+        if (( attempt < SSH_RETRY_COUNT )); then
+            echo "[lab-connect] SSH attempt $attempt/$SSH_RETRY_COUNT failed. Retrying in ${SSH_RETRY_DELAY}s..."
+            sleep "$SSH_RETRY_DELAY"
+        fi
+    done
+
+    echo "[lab-connect] SSH failed after $SSH_RETRY_COUNT attempts. Check your Tailscale connection."
+    exit 1
+}
+
 main() {
     if ! command -v tailscale &>/dev/null; then
         echo "[lab-connect] tailscale not found. Is Tailscale installed in WSL?"
